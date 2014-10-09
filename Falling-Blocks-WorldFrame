@@ -1,0 +1,30 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.Timer;
+
+public class WorldFrame extends JFrame implements ActionListener{
+		private WorldPanel world=new WorldPanel();
+	    private final int DELAY=3;
+	    private Timer t;
+	public WorldFrame()
+	{
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setUndecorated(true);
+        setVisible(true);
+        setSize(800,400);    
+        setLocationRelativeTo(null);
+        world.setPreferredSize(new Dimension(800,420));
+        add(world, BorderLayout.CENTER);
+        t=new Timer(DELAY,this);
+        t.start();
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		world.step();
+	}
+}
