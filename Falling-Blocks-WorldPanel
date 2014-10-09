@@ -1,0 +1,74 @@
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+public class WorldPanel extends JPanel{
+	private Graphics g;
+	private ArrayList<Block> blocklist;
+	private Robot karel;
+	public WorldPanel()
+	{
+		blocklist=new ArrayList<Block>();
+		karel=new Robot();
+	}
+	public void step()
+	{
+		spawn();
+		scoot();
+		repaint();
+	}
+	public void paint(Graphics g)
+	{
+        Graphics2D g2 = (Graphics2D) g;
+        g.setColor(Color.WHITE);
+        g2.fillRect(0,0,800,400);
+        g.setColor(Color.RED);
+        g2.fillRect(karel.getx(),karel.gety(),12,12);
+        g.setColor(Color.BLUE);
+        for(Block b:blocklist)
+        {
+        	g2.draw(b.getshape());
+        }
+	}
+	public void spawn()
+	{
+		Random r=new Random();
+		int rand=r.nextInt(100);
+		if(rand<=10)
+		{
+			int width=r.nextInt(40)+5;
+			int height=r.nextInt(40)+5;
+			int startLocation=r.nextInt(800-width);
+			Block b=new Block(startLocation,0-height,width,height,1);
+			blocklist.add(b);
+		}
+		if(rand==1)
+		{
+			int width=r.nextInt(100)+5;
+			int height=r.nextInt(100)+5;
+			int startLocation=r.nextInt(800-width);
+			Block b=new Block(startLocation,0-height,width,height,1);
+			blocklist.add(b);
+		}
+	}
+	public void scoot()
+	{
+		Iterator<Block> b=blocklist.iterator();
+		while(b.hasNext())
+		{
+			if(b.next().act())
+			{
+				b.remove();
+			}
+		}
+		karel.act(blocklist);
+	}
+}
