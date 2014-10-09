@@ -1,0 +1,43 @@
+import java.awt.Rectangle;
+
+public class Block {
+	private int x,y,width,height;
+	private int speed;
+	public Block(int newx,int newy,int wide,int high,int fast)
+	{
+		x=newx;
+		y=newy;
+		width=wide;
+		height=high;
+		speed=fast;
+	}
+	public boolean act()
+	{
+		y+=speed;
+		if(y>400)
+		{
+			return true;
+		}
+		return false;
+	}
+	public Rectangle getshape()
+	{
+		return new Rectangle(x,y,width,height);
+	}
+	public int getx()
+	{
+		return x;
+	}
+	public int gety()
+	{
+		return y;
+	}
+	public int getWidth()
+	{
+		return width;
+	}
+	public int getHeight()
+	{
+		return height;
+	}
+}
