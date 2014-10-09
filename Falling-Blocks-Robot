@@ -1,0 +1,182 @@
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Robot {
+	private int x,y,width,height;
+	private int target=395;
+	private final int TIMER=20;
+	private final int SLOPE=1;
+	private int timeCheck=0;
+	public Robot()
+	{
+		x=394;
+		y=388;
+		width=12;
+		height=12;
+	}
+	public Image getIcon()
+	{
+		return icon;
+	}
+	public int getx()
+	{
+		return x;
+	}
+	public int gety()
+	{
+		return y;
+	}
+	public int getWidth()
+	{
+		return width;
+	}
+	public int getHeight()
+	{
+		return height;
+	}
+	public boolean act(ArrayList<Block> world)
+	{
+		if(x==target||timeCheck==TIMER)
+		{
+			setTarget(scan(world));
+			timeCheck=0;
+		}
+		if(x<target)
+		{
+			x+=1;
+		}
+		if(x>target)
+		{
+			x-=1;
+		}
+		timeCheck++;
+		return false;
+	}
+	private void setTarget(int targ)
+	{
+		target=targ;
+	}
+	private int scan(ArrayList<Block> world)
+	{
+		Random ran=new Random();
+		int desirability=0;
+		int desiredx=x;
+		int scanx=x+6;
+		int scany=y;
+		boolean overlap=false;
+		while(scanx>=0&&scany>=0&&!overlap)
+		{	
+			int totalClearance=0;
+			int preLowestHeight=scany;
+			int lowestHeight=scany;
+			int postLowestHeight=scany;
+			for(Block r:world)
+			{
+				//three different heights make sure that the entire width of the robot is taken into account
+				if(r.getx()<scanx-6&&r.getx()+r.getWidth()>scanx-6)
+				{
+					if(scany-r.gety()<preLowestHeight)
+						//checks distance from y value of robot to nearest block
+					{
+						preLowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=-12)
+					{
+						overlap=true;
+					}
+				}
+				if(r.getx()<scanx&&r.getx()+r.getWidth()>scanx)
+				{
+					if(scany-r.gety()<lowestHeight)
+					{
+						lowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=-12)
+					{
+						overlap=true;
+					}
+				}
+				if(r.getx()<scanx+6&&r.getx()+r.getWidth()>scanx+6)
+				{
+					if(scany-r.gety()<postLowestHeight)
+					{
+						postLowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=12)
+					{
+						overlap=true;
+					}
+				}
+			}
+			totalClearance=preLowestHeight+lowestHeight+postLowestHeight;
+			if(totalClearance>=desirability) 
+			{
+				desirability=totalClearance;
+				desiredx=scanx-6;
+			}
+			int random=ran.nextInt(10)+6;
+			scanx-=random*SLOPE;
+			scany-=random;
+		}
+		//System.out.print("Current Target: "+desiredx);
+		scanx=x+6;
+		scany=y;
+		overlap=false;
+		while(scanx<=794&&scany<=388&&!overlap)
+		{	
+			int totalClearance=0;
+			int preLowestHeight=scany;
+			int lowestHeight=scany;
+			int postLowestHeight=scany;
+			for(Block r:world)
+			{
+				if(r.getx()<scanx-6&&r.getx()+r.getWidth()>scanx-6)
+				{
+					if(scany-r.gety()<preLowestHeight)
+					{
+						preLowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=12)
+					{
+						overlap=true;
+					}
+				}
+				if(r.getx()<scanx&&r.getx()+r.getWidth()>scanx)
+				{
+					if(scany-r.gety()<lowestHeight)
+					{
+						lowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=12)
+					{
+						overlap=true;
+					}
+				}
+				if(r.getx()<scanx+6&&r.getx()+r.getWidth()>scanx+6)
+				{
+					if(scany-r.gety()<postLowestHeight)
+					{
+						postLowestHeight=scany-r.gety();
+					}
+					if(scany-r.gety()-r.getHeight()<=0&&scany-r.gety()-r.getHeight()>=12)
+					{
+						overlap=true;
+					}
+				}
+			}
+			totalClearance=preLowestHeight+lowestHeight+postLowestHeight;
+			if(totalClearance>=desirability)
+			{
+				desirability=totalClearance;
+				desiredx=scanx-6;
+			}
+			int random=ran.nextInt(10)+5;
+			scanx+=random*SLOPE;
+			scany-=random;
+		}
+		return desiredx;
+	}
+}
